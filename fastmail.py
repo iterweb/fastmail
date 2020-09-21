@@ -5,7 +5,7 @@ scraper = cfscrape.CloudflareScraper()
 
 help_text = '''
 -h вызвать справку
--l [логин почты] получаем все сообщения
+-l [почта] получаем все сообщения
 -i [id сообщения] читаем выбранное сообщение
 -q выход
 '''
@@ -16,16 +16,18 @@ login = ''
 
 
 def getMessages(login):
+    tmp = login.split('@')
     response = scraper.get(
-        'https://www.1secmail.com/api/v1/?action=getMessages&login=%s&domain=1secmail.com' %login).text
+        'https://www.1secmail.com/api/v1/?action=getMessages&login=%s&domain=%s' %(tmp[0], tmp[1])).text
     get_str = ''.join(response).replace('[','').replace(']','').replace('{','').replace('}','').replace(',','\n')
     return get_str
 
 
 def readMessage(login, id):
+    tmp = login.split('@')
     response = scraper.get(
-        'https://www.1secmail.com/api/v1/?action=readMessage&login=%s&domain=1secmail.com&id'
-        '=%s' %(login, id)).text
+        'https://www.1secmail.com/api/v1/?action=readMessage&login=%s&domain=%s&id'
+        '=%s' %(tmp[0], tmp[1], id)).text
     result = le(response)
     return result.get('textBody')
 
@@ -46,5 +48,3 @@ while True:
 
     if member_input == '-q':
         break
-
-
